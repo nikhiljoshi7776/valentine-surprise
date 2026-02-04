@@ -149,9 +149,9 @@
       const images = ["images/1.JPG", "images/2.JPG", "images/3.JPG"];
 
       const titles = [
-        "This is where it all started",
-        "Some memories just feel like home",
-        "Moments that changed everything"
+        "This is where it all started.",
+        "Some memories just feel like home.",
+        "Moments that changed everything."
       ];
 
       const messages = [
@@ -278,6 +278,21 @@
       love.style.opacity = "1";
     });
     }, 2600);
+
+    // Exit button dynamically at the very end
+    setTimeout(() => {
+      const exitBtn = document.createElement("button");
+      exitBtn.id = "exit-btn";
+      exitBtn.textContent = "All done 💛";
+      content.appendChild(exitBtn);
+
+      exitBtn.addEventListener("click", () => {
+        document.body.style.opacity = "0";
+        setTimeout(() => {
+          window.location.href = "about:blank";
+        }, 600);
+      });
+    }, 4000);
 
   }
 
