@@ -42,7 +42,7 @@
       margin: 10px 0;
       border-radius: 10px;
       border: none;
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
       transition: transform 0.15s ease, box-shadow 0.3s ease;
     }
@@ -55,7 +55,6 @@
     #no { position: relative; width: 48%; display: inline-block; margin-left: 4%; }
     #yes { width: 48%; display: inline-block; }
 
-    /* Photo CSS - reduced size */
     .photo {
       width: 80%;
       max-width: 300px;
@@ -73,7 +72,6 @@
       box-shadow: 0 15px 30px rgba(0,0,0,0.2);
     }
 
-    .photo-btn-glow { transition: transform 0.15s ease, box-shadow 0.3s ease; }
     .photo-btn-glow:hover { box-shadow: 0 0 20px rgba(255,64,129,0.8); }
 
     .heart, .flower, .note, .sparkle {
@@ -105,9 +103,11 @@
 
     #press-play {
       position: fixed;
-      bottom: 20px; width: 100%; text-align: center;
-      font-size: 18px; font-weight: 500;
-      color: #ff4081; text-shadow: 1px 1px 2px #fff;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+      color: #ff4081;
       z-index: 20;
     }
   </style>
@@ -148,43 +148,46 @@
     // PHOTO SCREEN
     if (screen.photo) {
       title.textContent = "Some things are easy.";
-      text.textContent = "You… always have been.";
 
       const img = document.createElement("img");
       img.className = "photo";
       content.appendChild(img);
 
       const images = ["images/1.JPG", "images/2.JPG", "images/3.JPG"];
-      const buttonsText = ["Haha… our first date 😏", "Shopping spree 🛍️", "Roka day ❤️ (unforgettable!)"];
+      const messages = [
+        "Haha… our first date 😏 — still makes me smile every time.",
+        "Shopping spree 🛍️ — and somehow every moment felt perfect.",
+        "Roka day ❤️ — unforgettable, just like us."
+      ];
+
       let index = 0;
 
       const btn = document.createElement("button");
       btn.className = "primary photo-btn-glow";
+      btn.textContent = "→";
       content.appendChild(btn);
 
       function showPhoto(i) {
         img.classList.remove("show");
         setTimeout(() => {
           img.src = images[i];
-          img.classList.add("show"); 
+          img.classList.add("show");
           createOrbitingSparkles(img, 6, 4000);
         }, 50);
-        btn.textContent = buttonsText[i];
+        text.textContent = messages[i];
       }
 
       showPhoto(index);
 
       btn.onclick = () => {
         index++;
-        if (index < images.length) {
-          showPhoto(index);
-        } else next();
+        if (index < images.length) showPhoto(index);
+        else next();
       };
-
       return;
     }
 
-    // FINAL SCREEN - subtle playful No
+    // FINAL SCREEN
     if (screen.final) {
       title.textContent = screen.title;
       text.textContent = screen.text;
@@ -202,46 +205,36 @@
 
       let hoveredNo = false;
 
-      no.addEventListener("mouseover", () => {
+      no.onmouseover = () => {
         hoveredNo = true;
         yes.disabled = false;
         yes.style.opacity = 1;
+        no.style.transform = `translate(${Math.random()*120-60}px, ${Math.random()*80-40}px)`;
+      };
 
-        // subtle movement
-        const x = Math.random() * 120 - 60;
-        const y = Math.random() * 80 - 40;
-        no.style.transform = `translate(${x}px, ${y}px)`;
-      });
-
-      yes.addEventListener("mouseover", () => {
-        if (!hoveredNo) {
-          yes.style.transform = "translateY(-3px)";
-          setTimeout(() => yes.style.transform = "translateY(0px)", 200);
-        }
-      });
-
-      yes.onclick = () => { if (!hoveredNo) return; showFinalMessage(); };
+      yes.onclick = () => hoveredNo && showFinalMessage();
 
       content.appendChild(yes);
       content.appendChild(no);
       return;
     }
 
-    // NORMAL QUESTION SCREEN
+    // NORMAL SCREENS
     title.textContent = screen.title;
     text.textContent = screen.text;
-    if (screen.options) {
-      screen.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.textContent = opt;
-        btn.className = "option";
-        btn.onclick = next;
-        content.appendChild(btn);
-      });
-    }
+    screen.options?.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.textContent = opt;
+      btn.className = "option";
+      btn.onclick = next;
+      content.appendChild(btn);
+    });
   }
 
-  function next() { current++; if(current >= screens.length) return; render(); }
+  function next() {
+    current++;
+    render();
+  }
 
   function showFinalMessage() {
     content.innerHTML = "";
@@ -257,6 +250,14 @@
       img.classList.add("show");
       createOrbitingSparkles(img, 8, 5000);
     }, 50);
+
+    setTimeout(() => {
+      const note = document.createElement("p");
+      note.textContent = "Haha… yeah, I planned all of this 😌";
+      note.style.fontSize = "14px";
+      note.style.opacity = "0.75";
+      content.appendChild(note);
+    }, 1200);
   }
 
   function createFloatingSymbol(className, symbol) {
@@ -269,34 +270,34 @@
     document.body.appendChild(el);
   }
 
-  function createOrbitingSparkles(photo, count, duration=4000){
+  function createOrbitingSparkles(photo, count, duration = 4000) {
     const rect = photo.getBoundingClientRect();
-    for(let i=0;i<count;i++){
+    for (let i = 0; i < count; i++) {
       const sparkle = document.createElement("div");
       sparkle.className = "sparkle";
       sparkle.textContent = "✨";
-      sparkle.style.left = (rect.left + rect.width/2) + "px";
-      sparkle.style.top = (rect.top + rect.height/2) + "px";
-      sparkle.style.fontSize = (8+Math.random()*15)+"px";
-      sparkle.style.transition = "transform 2s linear, opacity 1s ease-out";
+      sparkle.style.left = rect.left + rect.width / 2 + "px";
+      sparkle.style.top = rect.top + rect.height / 2 + "px";
       document.body.appendChild(sparkle);
 
-      let angle = Math.random()*2*Math.PI;
-      let radius = 40 + Math.random()*30;
-      const interval = setInterval(()=>{
+      let angle = Math.random() * Math.PI * 2;
+      const interval = setInterval(() => {
         angle += 0.02;
-        sparkle.style.transform = `translate(${radius*Math.cos(angle)}px, ${radius*Math.sin(angle)}px)`;
+        sparkle.style.transform =
+          `translate(${40 * Math.cos(angle)}px, ${40 * Math.sin(angle)}px)`;
       }, 30);
 
-      setTimeout(()=>{
-        sparkle.style.opacity=0;
+      setTimeout(() => {
         clearInterval(interval);
-        setTimeout(()=> sparkle.remove(),1000);
+        sparkle.remove();
       }, duration);
     }
   }
 
-  for(let i=0;i<15;i++){ createFloatingSymbol("heart","❤"); createFloatingSymbol("flower","🌸"); }
+  for (let i = 0; i < 15; i++) {
+    createFloatingSymbol("heart", "❤");
+    createFloatingSymbol("flower", "🌸");
+  }
 
   const music = document.getElementById("bg-music");
   const musicToggle = document.getElementById("music-toggle");
@@ -304,14 +305,14 @@
   music.volume = 0.2;
 
   musicToggle.addEventListener("click", () => {
-    if(music.paused){
+    if (music.paused) {
       music.play();
-      musicToggle.textContent="Pause Music";
-      pressPlay.style.display="none";
-      for(let i=0;i<15;i++) createFloatingSymbol("note","🎵");
+      musicToggle.textContent = "Pause Music";
+      pressPlay.style.display = "none";
+      for (let i = 0; i < 15; i++) createFloatingSymbol("note", "🎵");
     } else {
       music.pause();
-      musicToggle.textContent="Play Music";
+      musicToggle.textContent = "Play Music";
     }
   });
 
