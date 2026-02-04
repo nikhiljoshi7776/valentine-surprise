@@ -64,15 +64,12 @@
       opacity: 0;
       transform: scale(0.8) rotate(-5deg);
       transition: transform 0.8s ease, opacity 0.8s ease, box-shadow 0.8s ease;
-      box-shadow: 0 0 0 rgba(0,0,0,0);
     }
     .photo.show {
       opacity: 1;
       transform: scale(1) rotate(0deg);
       box-shadow: 0 15px 30px rgba(0,0,0,0.2);
     }
-
-    .photo-btn-glow:hover { box-shadow: 0 0 20px rgba(255,64,129,0.8); }
 
     .heart, .flower, .note, .sparkle {
       position: absolute;
@@ -96,9 +93,12 @@
     #music-toggle {
       position: fixed; top: 10px; right: 10px;
       padding: 8px 12px;
-      border: none; border-radius: 8px;
-      background: black; color: white;
-      cursor: pointer; z-index: 20;
+      border: none;
+      border-radius: 8px;
+      background: black;
+      color: white;
+      cursor: pointer;
+      z-index: 20;
     }
 
     #press-play {
@@ -145,36 +145,42 @@
     content.innerHTML = "";
     const screen = screens[current];
 
-    // PHOTO SCREEN
     if (screen.photo) {
-      title.textContent = "Some things are easy.";
-
-      const img = document.createElement("img");
-      img.className = "photo";
-      content.appendChild(img);
-
       const images = ["images/1.JPG", "images/2.JPG", "images/3.JPG"];
+
+      const titles = [
+        "This is where it all started.",
+        "Some memories just feel like home.",
+        "Moments that changed everything."
+      ];
+
       const messages = [
         "Haha… our first date 😏 — still makes me smile every time.",
         "Shopping spree 🛍️ — and somehow every moment felt perfect.",
         "Roka day ❤️ — unforgettable, just like us."
       ];
 
+      const img = document.createElement("img");
+      img.className = "photo";
+      content.appendChild(img);
+
       let index = 0;
 
       const btn = document.createElement("button");
-      btn.className = "primary photo-btn-glow";
+      btn.className = "primary";
       btn.textContent = "→";
       content.appendChild(btn);
 
       function showPhoto(i) {
+        title.textContent = titles[i];
+        text.textContent = messages[i];
+
         img.classList.remove("show");
         setTimeout(() => {
           img.src = images[i];
           img.classList.add("show");
           createOrbitingSparkles(img, 6, 4000);
         }, 50);
-        text.textContent = messages[i];
       }
 
       showPhoto(index);
@@ -187,7 +193,6 @@
       return;
     }
 
-    // FINAL SCREEN
     if (screen.final) {
       title.textContent = screen.title;
       text.textContent = screen.text;
@@ -204,12 +209,12 @@
       no.id = "no";
 
       let hoveredNo = false;
-
       no.onmouseover = () => {
         hoveredNo = true;
         yes.disabled = false;
         yes.style.opacity = 1;
-        no.style.transform = `translate(${Math.random()*120-60}px, ${Math.random()*80-40}px)`;
+        no.style.transform =
+          `translate(${Math.random()*120-60}px, ${Math.random()*80-40}px)`;
       };
 
       yes.onclick = () => hoveredNo && showFinalMessage();
@@ -219,7 +224,6 @@
       return;
     }
 
-    // NORMAL SCREENS
     title.textContent = screen.title;
     text.textContent = screen.text;
     screen.options?.forEach(opt => {
@@ -238,8 +242,9 @@
 
   function showFinalMessage() {
     content.innerHTML = "";
-    title.textContent = "You just made me the happiest 😍";
-    text.textContent = "I can’t wait to be with you soon. Every moment with you is special.";
+    title.textContent = "You just made me the happiest! 😍";
+    text.textContent =
+      "I can’t wait to be with you soon. Every moment with you is special.";
 
     const img = document.createElement("img");
     img.className = "photo";
@@ -258,15 +263,31 @@
       note.style.opacity = "0.75";
       content.appendChild(note);
     }, 1200);
+
+    setTimeout(() => {
+      const love = document.createElement("p");
+      love.textContent = "I love you so much! 💖";
+      love.style.marginTop = "18px";
+      love.style.fontSize = "20px";
+      love.style.fontWeight = "500";
+      love.style.opacity = "0";
+      love.style.transition = "opacity 1.5s ease";
+      content.appendChild(love);
+
+    requestAnimationFrame(() => {
+      love.style.opacity = "1";
+    });
+    }, 2600);
+
   }
 
   function createFloatingSymbol(className, symbol) {
     const el = document.createElement("div");
     el.className = className;
     el.textContent = symbol;
-    el.style.left = Math.random()*100 + "vw";
-    el.style.fontSize = (15 + Math.random()*30) + "px";
-    el.style.animationDuration = (5 + Math.random()*5) + "s";
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.fontSize = (15 + Math.random() * 30) + "px";
+    el.style.animationDuration = (5 + Math.random() * 5) + "s";
     document.body.appendChild(el);
   }
 
